@@ -7,6 +7,10 @@ from watchdog.events import FileSystemEventHandler
 # Define the folder to monitor and the server URL
 MONITOR_FOLDER = '/path/to/your/folder'
 SERVER_URL = 'http://yourserver.com/upload'  # Change this to your server's upload URL
+LOGIN_DATA = {
+    "username":"username",
+    "password":"password"
+}
 
 class FileHandler(FileSystemEventHandler):
     def on_created(self, event):
@@ -19,7 +23,7 @@ class FileHandler(FileSystemEventHandler):
         # Send the file to the server
         with open(file_path, 'rb') as f:
             files = {'file': f}
-            response = requests.post(SERVER_URL, files=files)
+            response = requests.post(SERVER_URL, data=LOGIN_DATA, files=files)
             if response.status_code == 200:
                 print(f'Successfully sent: {file_path}')
             else:
