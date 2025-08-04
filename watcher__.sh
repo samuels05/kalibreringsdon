@@ -24,9 +24,14 @@ upload_pdf() {
 
     if [[ "$file" == *.pdf ]]; then
         log "PDF hittad: $file"
-        response=$(curl -s -w "\nHTTP_STATUS:%{http_code}" -X POST "$UPLOAD_URL" \
+        response=$(curl --connect-timeout 5 --max-time 30 \
+            -X POST "$UPLOAD_URL" \
+            -F "username:user" \
+            -F "password:passw" \
             -F "file=@${file}" \
-            -H "Expect:")
+            -H "Expect:" \
+            -s -w "\nHTTP_STATUS:%{http_code}")
+
         body=$(echo "$response" | sed -e '/HTTP_STATUS:/d')
         status=$(echo "$response" | grep "HTTP_STATUS" | cut -d':' -f2)
 
